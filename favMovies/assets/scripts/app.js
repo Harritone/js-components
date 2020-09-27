@@ -1,25 +1,29 @@
 //const addMovieBtn = document.querySelector('.btn-add');
 const startAddMovieBtn = document.querySelector('header button');
 const addMovieModal = document.getElementById('add-modal');
-const btnCancel = document.querySelector('.btn-add');
-//const backdrop = document.getElementById('backdrop');
+const cancelAddMovieBtn = addMovieModal.querySelector('.btn--passive');
+const backdrop = document.getElementById('backdrop');
 
 
 const toggleModal = () => {
   addMovieModal.classList.toggle('visible');
-  backdrop.classList.toggle('visible');
+  toggleBackdrop();
   };
 
+const toggleBackdrop = () => {
+  backdrop.classList.toggle('visible');
+};
 
-startAddMovieBtn.addEventListener('click', () => {
-  //addMovieModal.classList.toggle('visible');
+const cancelAddMovie = () => {
   toggleModal();
-});
+}
 
-backdrop.addEventListener('click', () => {
+const backdropClickHandler = () => {
   toggleModal();
-})
+};
 
-btnCancel.addEventListener('click', () => {
-  //toggleVisibilityModal();
-})
+startAddMovieBtn.addEventListener('click', () => toggleModal());
+
+backdrop.addEventListener('click', () => backdropClickHandler());
+
+cancelAddMovieBtn.addEventListener('click', () => cancelAddMovie());
