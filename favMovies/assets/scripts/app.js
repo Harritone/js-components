@@ -27,7 +27,12 @@ const updateUI = () => {
   }
 };
 
-const deleteMovie = (id) => {
+const closeMovieDeletionModal = () => {
+  toggleBackdrop();
+  deleteMovieModal.classList.remove('visible');
+}
+
+const deleteMovieHandler = (id) => {
   let movieIndex = 0;
   for (const movie of movies) {
     if (movie.id === id) {
@@ -37,18 +42,25 @@ const deleteMovie = (id) => {
   }
   movies.splice(movieIndex, 1);
   movieList.children[movieIndex].remove();
-
+  closeMovieDeletionModal();
+  updateUI();
 }
 
-const closeMovieDeletionModal = () => {
-  toggleBackdrop();
-  deleteMovieModal.classList.remove('visible');
-}
-
-const deleteMovieHandler = (id) => {
+const startDeleteMovieHandler = (id) => {
   deleteMovieModal.classList.add('visible');
   toggleBackdrop();
-  //deleteMovie(id);
+  const cancelDeletionBtn = deleteMovieModal.querySelector('.btn--passive');
+  let confirmDeletionBtn = deleteMovieModal.querySelector('.btn--danger');
+
+  confirmDeletionBtn.replaceWith(confirmDeletionBtn.cloneNode(true));
+  confirmDeletionBtn = deleteMovieModal.querySelector('.btn--danger');
+
+  confirmDeletionBtn.removeEventListener('click', deleteMovieHandler)
+  cancelDeletionBtn.addEventListener('click', closeMovieDeletionModal);
+  
+  confirmDeletionBtn.addEventListener('click',
+    deleteMovieHandler.bind(null, id)
+  );
 };
 
 const renderNewMovie = (movie) => {
@@ -63,7 +75,7 @@ const renderNewMovie = (movie) => {
     <p>${movie.rating}/5 stars</p>
   </div>
   `;
-  newMovieElement.addEventListener('click', deleteMovieHandler.bind(null, movie.id))
+  newMovieElement.addEventListener('click', startDeleteMovieHandler.bind(null, movie.id))
   movieList.append(newMovieElement);
 };
 
@@ -79,6 +91,8 @@ const showMovieModal = () => {
 
 const toggleBackdrop = () => {
   backdrop.classList.toggle('visible');
+  //closeMovieDeletionModal();
+  clearMovieInput();
 };
 
 const cancelAddMovieHandler = () => {
