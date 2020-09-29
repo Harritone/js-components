@@ -25,6 +25,18 @@ const updateUI = () => {
   }
 };
 
+const deleteMovieHandler = (id) => {
+  let movieIndex = 0;
+  for (const movie of movies) {
+    if (movie.id === id) {
+      break;
+    }
+    movieIndex++;
+  }
+  movies.splice(movieIndex, 1);
+  movieList.children[movieIndex].remove();
+};
+
 const renderNewMovie = (movie) => {
   const newMovieElement = document.createElement('li');
   newMovieElement.className = 'movie-element';
@@ -37,6 +49,7 @@ const renderNewMovie = (movie) => {
     <p>${movie.rating}/5 stars</p>
   </div>
   `;
+  newMovieElement.addEventListener('click', deleteMovieHandler.bind(null, movie.id))
   movieList.append(newMovieElement);
 };
 
@@ -70,6 +83,7 @@ const addMovieHandler = () => {
     return;
   }
   const newMovie = {
+    id: Math.random().toString(),
     title: titleValue,
     image: imageUrlValue,
     rating: ratingValue,
