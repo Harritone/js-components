@@ -7,6 +7,7 @@ const confirmAddMovieBtn = cancelAddMovieBtn.nextElementSibling;
 const userInputs = addMovieModal.querySelectorAll('input');
 const entryText = document.getElementById('entry-text');
 const movieList = document.getElementById('movie-list');
+const deleteMovieModal = document.getElementById('delete-modal');
 
 const movies = [];
 
@@ -17,6 +18,7 @@ const clearMovieInput = () => {
   userInputs.forEach(userInput => userInput.value = '');
 };
 
+
 const updateUI = () => {
   if (movies.length === 0) {
     entryText.style.display = 'block';
@@ -25,7 +27,7 @@ const updateUI = () => {
   }
 };
 
-const deleteMovieHandler = (id) => {
+const deleteMovie = (id) => {
   let movieIndex = 0;
   for (const movie of movies) {
     if (movie.id === id) {
@@ -35,6 +37,18 @@ const deleteMovieHandler = (id) => {
   }
   movies.splice(movieIndex, 1);
   movieList.children[movieIndex].remove();
+
+}
+
+const closeMovieDeletionModal = () => {
+  toggleBackdrop();
+  deleteMovieModal.classList.remove('visible');
+}
+
+const deleteMovieHandler = (id) => {
+  deleteMovieModal.classList.add('visible');
+  toggleBackdrop();
+  //deleteMovie(id);
 };
 
 const renderNewMovie = (movie) => {
@@ -53,8 +67,12 @@ const renderNewMovie = (movie) => {
   movieList.append(newMovieElement);
 };
 
-const toggleModal = () => {
-  addMovieModal.classList.toggle('visible');
+const closeMovieModal = () => {
+  addMovieModal.classList.remove('visible');
+};
+
+const showMovieModal = () => {
+  addMovieModal.classList.add('visible');
   toggleBackdrop();
   clearMovieInput();
   };
@@ -64,11 +82,13 @@ const toggleBackdrop = () => {
 };
 
 const cancelAddMovieHandler = () => {
-  toggleModal();
+  closeMovieModal();
+  toggleBackdrop();
 }
 
 const backdropClickHandler = () => {
-  toggleModal();
+  closeMovieModal();
+  closeMovieDeletionModal();
 };
 
 
@@ -89,13 +109,13 @@ const addMovieHandler = () => {
     rating: ratingValue,
   }
   movies.push(newMovie);
-  console.log(movies);
-  toggleModal();
+  closeMovieModal();
+  toggleBackdrop();
   updateUI()
   renderNewMovie(newMovie);
 };
 
-startAddMovieBtn.addEventListener('click', () => toggleModal());
+startAddMovieBtn.addEventListener('click', () => showMovieModal());
 backdrop.addEventListener('click', () => backdropClickHandler());
 cancelAddMovieBtn.addEventListener('click', () => cancelAddMovieHandler());
 confirmAddMovieBtn.addEventListener('click', addMovieHandler);
