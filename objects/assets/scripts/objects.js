@@ -22,7 +22,7 @@ const renderMovies = (filter = '') => {
     const { info } = movie;
     let text = info.title + ' - ';
     for (const key in info) {
-      if (key !== 'title') {
+      if (key !== 'title' && key !== '_title') {
         text = text + `${key}: ${info[key]}`;
       }
     }
