@@ -11,11 +11,22 @@ class Product {
 class ShopingCart {
   items = [];
 
-  addProduct(product) {
-    this.items.push(product);
+  set cartItems(value) {
+    this.items = value;
     this.totalOutput.innerHTML = `
-    <h2>Total: \$${product.price}</h2>
+    <h2>Total: \$${this.totalAmount.toFixed(2)}</h2>
     `;
+  }
+
+  get totalAmount() {
+    const sum = this.items.reduce((acc, item) => acc + item.price, 0);
+    return sum;
+  }
+
+  addProduct(product) {
+    const updatedItems = [...this.items];
+    updatedItems.push(product);
+    this.cartItems = updatedItems;
   }
 
   render() {
