@@ -112,7 +112,7 @@ class ProductItem extends Component {
 }
 
 class ProductList extends Component{
-  products = [
+  #products = [
     new Product( 'A pillow',
       'https://johnlewis.scene7.com/is/image/JohnLewis/236578658?$rsp-pdp-port-1080$', 
       'A nice pillow', 24.99),
@@ -124,16 +124,13 @@ class ProductList extends Component{
   constructor(renderHookId) {
     super(renderHookId, false);
     this.render();
-    this.fetchProducts()
   }
 
-  fetchProducts() {
-  }
 
   render() {
     this.createRootElement('ul', 'product-list', [ new ElementAttribute('id', 'prod-list')]);
-    if (this.products && this.products.length > 0) {
-      for (const prod of this.products) {
+    if (this.#products && this.#products.length > 0) {
+      for (const prod of this.#products) {
         new ProductItem(prod, 'prod-list');
       }
     }
