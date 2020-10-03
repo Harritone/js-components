@@ -1,3 +1,16 @@
+class DOMHelper {
+  static clearEventListeners(element) {
+    const clonedEl = element.cloneNode(true);
+    element.replaceWith(clonedEl);
+    return clonedEl;
+  }
+  static moveElement(elementId, newDestinationSelector) {
+    const element = document.getElementById(elementId);
+    const destinationElement = document.querySelector(newDestinationSelector);
+    destinationElement.append(element);
+  }
+}
+
 class Tooltip {
 
 }
@@ -11,10 +24,16 @@ class ProjectItem {
   connectMoreInfoButton() {
 
   }
-  connectSwitchButton() {
+  connectSwitchButton(type) {
     const projectItemElement = document.getElementById(this.id);
-    const switchBtn = projectItemElement.querySelector('button:last-of-type');
-    switchBtn.addEventListener('click', this.updateProjectListsHandler);
+    let switchBtn = projectItemElement.querySelector('button:last-of-type');
+    switchBtn = DOMHelper.clearEventListeners(switchBtn);
+    switchBtn.textContent = type === 'active' ? 'Finish' : 'Activate';
+    switchBtn.addEventListener('click', this.updateProjectListsHandler.bind(null, this.id));
+  }
+  update(updateProjectListsFn, type) {
+    this.updateProjectListsHandler = updateProjectListsFn;
+    this.connectSwitchButton(type)
   }
 }
 
@@ -33,8 +52,10 @@ class ProjectList {
     this.switchHandler = switchHandlerFunction;
   }
 
-  addProject() {
-    console.log(this);
+  addProject(project) {
+    this.projects.push(project);
+    DOMHelper.moveElement(project.id, `#${this.type}-projects ul`);
+    project.update(this.switchProject.bind(this), this.type);
   }
 
   switchProject(projectId) {
