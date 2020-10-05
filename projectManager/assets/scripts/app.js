@@ -31,15 +31,16 @@ class Helper {
 }
 
 class Tooltip extends Component {
-  constructor(hasActiveTooltipFn) {
+  constructor(hasActiveTooltipFn, message) {
     super();
     this.hasActiveTooltipFn = hasActiveTooltipFn;
+    this.message = message;
     this.create();
   }
   create() {
     const tooltip = document.createElement('div');
     tooltip.className = 'card';
-    tooltip.textContent = 'Some tooltip content here';
+    tooltip.textContent = this.message;
     tooltip.addEventListener('click', this.closeTooltip);
     this.element = tooltip;
   }
@@ -65,15 +66,16 @@ class ProjectItem {
   }
   connectMoreInfoBtn() {
     const moreInfoBtn = document.getElementById(this.id).querySelector('button');
-    moreInfoBtn.addEventListener('click', this.showMoreInfoHandler);
+    moreInfoBtn.addEventListener('click', this.showMoreInfoHandler.bind(this));
   }
   showMoreInfoHandler() {
     if (this.hasActiveTooltip) {
       return;
     } else {
+      const message = document.getElementById(this.id).dataset.extraInfo
       const tooltip = new Tooltip(() => {
         this.hasActiveTooltip = false;
-      });
+      }, message);
       tooltip.attach();
       this.hasActiveTooltip = true
     }
