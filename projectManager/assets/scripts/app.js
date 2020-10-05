@@ -1,5 +1,22 @@
 class Tooltip {
-
+  constructor(closeNotifierFn){
+    this.closeNotifier = closeNotifierFn;
+  }
+  attach() {
+    const tooltip = document.createElement('div')
+    tooltip.className = 'card';
+    tooltip.textContent = 'some content';
+    tooltip.addEventListener('click', this.closeTooltip);
+    this.element = tooltip;
+    document.body.append(tooltip);
+  }
+  closeTooltip = () => {
+    this.detach();
+    this.closeNotifier();
+  };
+  detach() {
+    this.element.remove();
+  }
 }
 
 class Helper {
@@ -16,6 +33,7 @@ class Helper {
 }
 
 class ProjectItem {
+  hasActiveTooltip = false;
   constructor(id, updateProjectListsFunction, type) {
     this.id = id;
     this.updateProjectListsHandler = updateProjectListsFunction;
@@ -32,8 +50,19 @@ class ProjectItem {
     this.updateProjectListsHandler = updateProjectsListFn;
     this.connectSwitchBtn(type);
   }
+  showMoreInfoHandler() {
+    if(this.hasActiveTooltip) {
+      return;
+    }
+    const tooltip = new Tooltip(() => {
+      this.hasActiveTooltip = false;
+    });
+    tooltip.attach();
+    this.hasActiveTooltip = true;
+  }
     connectMoreInfoBtn() {
-
+      const moreInfoBtn = document.getElementById(this.id).querySelector('button');
+      moreInfoBtn.addEventListener('click', this.showMoreInfoHandler);
   }
 }
 
