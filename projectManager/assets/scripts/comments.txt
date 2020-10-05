@@ -47,7 +47,7 @@ class Helper {
 }
 
 class ProjectItem {
-  // static field that points wheter instance has active tooltip or not, by default - flase
+  // static field that points whether instance has active tooltip or not, by default - flase
   constructor { // constructor expects id, updateProjectListsFunction(from ProjectList instance it is going to be switchProject) and type(active or finished)
     //assigns an id to the instance property
     // assigns recieved from ProjectList instance function to this property
