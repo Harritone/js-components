@@ -1,7 +1,21 @@
+class Helper {
+  static moveElement(hostElementId, destinationSelector) {
+    const element = document.getElementById(hostElementId);
+    const destinationElement = document.querySelector(destinationSelector);
+    destinationElement.append(element);
+    element.scrollIntoView({behavior: 'smooth'});
+  }
+  static clearEventListeners(element) {
+    const clonedElement = element.cloneNode(true);
+    element.replaceWith(clonedElement);
+    return clonedElement;
+  }
+}
+
 class Component {
-  constructor(elementId, insertBefore = false) {
-    if (elementId) {
-      this.hostElement = document.getElementById(elementId);
+  constructor(hostElementId, insertBefore = false) {
+    if (hostElementId) {
+      this.hostElement = document.getElementById(hostElementId);
     } else {
       this.hostElement = document.body;
     }
@@ -17,22 +31,9 @@ class Component {
   }
 }
 
-class Helper {
-  static moveElement(elementId, destinationSelector) {
-    const element = document.getElementById(elementId);
-    const destinationElement = document.querySelector(destinationSelector);
-    destinationElement.append(element);
-  }
-  static clearEventListeners(element) {
-    const clonedElement = element.cloneNode(true);
-    element.replaceWith(clonedElement);
-    return clonedElement;
-  }
-}
-
 class Tooltip extends Component {
-  constructor(hasActiveTooltipFn, message) {
-    super();
+  constructor(hasActiveTooltipFn, message, hostElementId) {
+    super(hostElementId);
     this.hasActiveTooltipFn = hasActiveTooltipFn;
     this.message = message;
     this.create();
@@ -40,7 +41,24 @@ class Tooltip extends Component {
   create() {
     const tooltip = document.createElement('div');
     tooltip.className = 'card';
-    tooltip.textContent = this.message;
+    const tooltipTemplate = document.getElementById('tooltip');
+    const tooltipBody = document.importNode(tooltipTemplate.content, true);
+    tooltipBody.querySelector('p').textContent = this.message;
+    tooltip.append(tooltipBody);
+
+    const hostElPosLeft = this.hostElement.offsetLeft;
+    const hostElPosTop = this.hostElement.offsetTop;
+    const hostElHeight = this.hostElement.clientHeight;
+    const parentElementScrolling = this.hostElement.parentElement.scrollTop;
+
+    const x = hostElPosLeft + 20;
+    const y = hostElPosTop + hostElHeight - parentElementScrolling - 10;
+
+    tooltip.style.position = 'absolute';
+
+    tooltip.style.left = x + 'px';
+    tooltip.style.top = y + 'px';
+
     tooltip.addEventListener('click', this.closeTooltip);
     this.element = tooltip;
   }
@@ -75,7 +93,7 @@ class ProjectItem {
       const message = document.getElementById(this.id).dataset.extraInfo
       const tooltip = new Tooltip(() => {
         this.hasActiveTooltip = false;
-      }, message);
+      }, message, this.id);
       tooltip.attach();
       this.hasActiveTooltip = true
     }
@@ -116,7 +134,15 @@ class App {
     const activeProjectsList = new ProjectList('active');
     const finishedProjectsList = new ProjectList('finished');
     activeProjectsList.setSwitchHandlerFn(finishedProjectsList.addProject.bind(finishedProjectsList));
+
     finishedProjectsList.setSwitchHandlerFn(activeProjectsList.addProject.bind(activeProjectsList));
+    document.getElementById('start-analitics-btn').addEventListener('click', this.startAnalitic)
+  }
+  static startAnalitic() {
+    const analiticScript = document.createElement('script');
+    analiticScript.src = 'assets/scripts/analitic.js';
+    analiticScript.defer = true;
+    document.head.append(analiticScript);
   }
 }
 
