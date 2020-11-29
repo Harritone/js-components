@@ -40,6 +40,7 @@ ul {
 
 li {
   margin: 1rem 0;
+  cursor: grab;
 }
 
 section {
@@ -123,4 +124,8 @@ button:active {
 #finished-projects header h2 {
   color: white;
   margin: 0;
+}
+
+.droppable {
+  background-color: #ffe0ec;
 }
