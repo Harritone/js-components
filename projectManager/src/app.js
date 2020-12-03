@@ -1,4 +1,4 @@
-import { ProjectList } from "../scripts/App/ProjectList.js";
+import { ProjectList } from "./App/ProjectList";
 class App {
   static init() {
     const activeProjectList = new ProjectList("active");

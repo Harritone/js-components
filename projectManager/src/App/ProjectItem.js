@@ -1,7 +1,7 @@
 /* eslint-disable multiline-ternary */
 /* eslint-disable no-ternary */
 /* eslint-disable function-call-argument-newline */
-import { DOMHelper } from "../Utility/DOMHelper.js";
+import { DOMHelper } from "../Utility/DOMHelper";
 // import { Tooltip } from "./Tooltip.js";
 export class ProjectItem {
   constructor(id, updateProjectListsFunction, type) {

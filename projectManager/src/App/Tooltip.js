@@ -1,16 +1,16 @@
+/* eslint-disable max-statements */
 import Cmp from "./Component.js";
 export class Tooltip extends Cmp {
   constructor(closeNotifierFunction, text, hostElementId) {
     super(hostElementId);
     this.closeNotifier = closeNotifierFunction;
     this.text = text;
+    this.closeTooltip = () => {
+      this.detach();
+      this.closeNotifier();
+    };
     this.create();
   }
-
-  closeTooltip = () => {
-    this.detach();
-    this.closeNotifier();
-  };
 
   create() {
     const tooltipElement = document.createElement("div");
@@ -30,8 +30,8 @@ export class Tooltip extends Cmp {
     const y = hostElPosTop + hostElHeight - 10 - parentElementScrolling;
 
     tooltipElement.style.position = "absolute";
-    tooltipElement.style.left = x + "px";
-    tooltipElement.style.top = y + "px";
+    tooltipElement.style.left = `${x}px`;
+    tooltipElement.style.top = `${y}px`;
 
     tooltipElement.addEventListener("click", this.closeTooltip);
     this.element = tooltipElement;

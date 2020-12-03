@@ -1,10 +1,9 @@
-import { ProjectItem as PrjItem } from "./ProjectItem.js";
-import * as DOMH from "../Utility/DOMHelper.js";
+import { DOMHelper } from "../Utility/DOMHelper";
+import { ProjectItem as PrjItem } from "./ProjectItem";
 
 export class ProjectList {
-  projects = [];
-
   constructor(type) {
+    this.projects = [];
     this.type = type;
     const prjItems = document.querySelectorAll(`#${type}-projects li`);
     for (const prjItem of prjItems) {
@@ -40,6 +39,7 @@ export class ProjectList {
       const prjId = event.dataTransfer.getData("text/plain");
       if (this.projects.find((p) => p.id === prjId)) {
         list.parentElement.classList.remove("droppable");
+
         return;
       }
       document
@@ -57,7 +57,7 @@ export class ProjectList {
 
   addProject(project) {
     this.projects.push(project);
-    DOMH.moveElement(project.id, `#${this.type}-projects ul`);
+    DOMHelper.moveElement(project.id, `#${this.type}-projects ul`);
     project.update(this.switchProject.bind(this), this.type);
   }
 
