@@ -1,4 +1,5 @@
-export function doSomething() {}
+/* eslint-disable no-ternary */
+/* eslint-disable multiline-ternary */
 export default class Component {
   constructor(hostElementId, insertBefore = false) {
     if (hostElementId) {
@@ -9,6 +10,7 @@ export default class Component {
 
     this.insertBefore = insertBefore;
   }
+
   detach() {
     if (this.element) {
       this.element.remove();
