@@ -14,6 +14,7 @@ const current1El = document.getElementById('current--1');
 let currentScore = 0;
 let activePlayer = 0;
 const scores = [99, 99];
+let isWinner = false;
 
 score0El.textContent = 0;
 score1El.textContent = 0;
@@ -30,27 +31,18 @@ const rollDiceHandler = () => {
   // 3. Check for rolled 1: if true - switch to the next player
   if (dice !== 1) {
     // Add dice to current score
-    // currentScore += dice;
-    scores[activePlayer] += dice;
-    document.getElementById(`current--${activePlayer}`).textContent =
-      scores[activePlayer];
-
+    currentScore += dice;
+    document.getElementById(
+      `current--${activePlayer}`
+    ).textContent = currentScore;
+  } else if (dice === 1 && scores[activePlayer] === 99) {
+    currentScore += dice;
+    getCurrentPlayerEl(activePlayer).textContent = currentScore;
+    scores[activePlayer] += currentScore;
     checkWinner();
   } else {
-    // reset current player's scores
-    // currentScore = 0;
-    scores[activePlayer] = 0;
-    document.getElementById(`current--${activePlayer}`).textContent = '0';
-    // // remove active state from current player on UI
-    // document
-    //   .querySelector(`.player--${activePlayer}`)
-    //   .classList.remove('player--active');
-    // // switch player
-    // activePlayer = activePlayer === 0 ? 1 : 0;
-    // // add active state to current player on UI
-    // document
-    //   .querySelector(`.player--${activePlayer}`)
-    //   .classList.add('player--active');
+    currentScore = 0;
+    getCurrentPlayerEl(activePlayer).textContent = currentScore;
     switchPlayer();
   }
 };
@@ -58,9 +50,15 @@ const rollDiceHandler = () => {
 const checkWinner = function () {
   if (scores[activePlayer] >= 100) {
     // getCurrentPlayerEl(activePlayer).classList.add('player--winner');
+    score0El.textContent = scores[0];
+    score1El.textContent = scores[1];
+
     document
       .querySelector(`.player--${activePlayer}`)
       .classList.add('player--winner');
+    isWinner = true;
+    btnRoll.removeEventListener('click', rollDiceHandler);
+    btnHold.removeEventListener('click', holdHandler);
   }
 };
 
@@ -82,8 +80,33 @@ const switchPlayer = () => {
 };
 
 const holdHandler = () => {
-  switchPlayer();
+  scores[activePlayer] += currentScore;
+  score0El.textContent = scores[0];
+  score1El.textContent = scores[1];
+  getCurrentPlayerEl(activePlayer).textContent = 0;
+  currentScore = 0;
+  checkWinner();
+  if (!isWinner) switchPlayer();
+  // switchPlayer();
+};
+
+const newGameHandler = () => {
+  btnRoll.addEventListener('click', rollDiceHandler);
+  btnHold.addEventListener('click', holdHandler);
+  if (document.querySelector('.player--winner'))
+    document
+      .querySelector('.player--winner')
+      .classList.remove('player--winner');
+  score0El.textContent = '0';
+  score1El.textContent = '0';
+  console.log(score0El);
+  scores[0] = 0;
+  scores[1] = 0;
+  activePlayer = 0;
+  currentScore = 0;
+  isWinner = false;
 };
 
 btnRoll.addEventListener('click', rollDiceHandler);
 btnHold.addEventListener('click', holdHandler);
+btnNew.addEventListener('click', newGameHandler);
