@@ -20,9 +20,10 @@ const buttonOnClick = () => {
   if (score > 1) {
     if (!guess) {
       messageElement.textContent = '⛔ No number!';
-      clearInput();
     } else if (guess === secretNumber) {
       messageElement.textContent = '🎉 Correct Number!';
+      document.body.style.backgroundColor = '#60b347';
+      numberElement.style.width = '30rem';
     } else if (guess > secretNumber) {
       messageElement.textContent = 'Too high! 📈';
       score--;
