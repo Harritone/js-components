@@ -8,16 +8,17 @@ const inputElement = document.querySelector('input');
 const scoreElement = document.querySelector('.score');
 const highScoreElement = document.querySelector('.highscore');
 
-let secretNumber = Math.trunc(Math.random() * 20) + 1;
-let score = 20;
+// let secretNumber = Math.trunc(Math.random() * 20) + 1;
+// let score = 20;
+let score;
+let secretNumber;
 let highScore = window.localStorage.getItem('highScore') || 0;
 highScoreElement.textContent = highScore;
 
-scoreElement.textContent = score;
+// scoreElement.textContent = score;
 
 const buttonOnClick = () => {
   const guess = +document.querySelector('.guess').value;
-  console.log(secretNumber);
 
   if (score > 1) {
     if (!guess) {
@@ -59,6 +60,8 @@ const newGameHandler = () => {
 const clearInput = () => {
   inputElement.value = '';
 };
+
+newGameHandler();
 
 startButtonElement.addEventListener('click', buttonOnClick);
 newGameButtonElement.addEventListener('click', newGameHandler);
