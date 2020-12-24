@@ -4,6 +4,7 @@ import Dice from './Dice.js';
 import Player from './Player.js';
 
 export default class Pig {
+  hasWinner = false;
   constructor(container) {
     this.container = container;
     this.player0 = new Player(0, true);
@@ -15,6 +16,7 @@ export default class Pig {
     this.render();
     this.connectRollBtn();
     this.connectHoldBtn();
+    this.connectNewBtn();
     this.activePlayer = this.player0;
   }
 
@@ -37,7 +39,14 @@ export default class Pig {
     this.buttonHold.element.addEventListener('click', this.holdBtnHandler);
   }
 
+  connectNewBtn() {
+    this.buttonNew.element.addEventListener('click', this.newBtnHandler);
+  }
+
   rollBtnHandler = () => {
+    if (this.hasWinner) {
+      return;
+    }
     this.dice.roll();
     const { number } = this.dice;
     console.log(number);
@@ -54,7 +63,18 @@ export default class Pig {
   holdBtnHandler = () => {
     console.log('Hold');
     this.activePlayer.hold();
-    this.switchPlayer();
+    this.hasWinner = this.activePlayer.checkWinner();
+    if (!this.hasWinner) {
+      this.switchPlayer();
+    }
+  };
+
+  newBtnHandler = () => {
+    this.player0.reset();
+    this.player1.reset();
+    this.activePlayer = this.player0;
+    this.activePlayer.activate();
+    this.hasWinner = false;
   };
 
   switchPlayer() {

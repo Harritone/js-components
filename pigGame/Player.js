@@ -68,4 +68,26 @@ export default class Player {
     this.renderCurrentScore();
     this.renderScore();
   }
+
+  checkWinner() {
+    if (this.score >= 10) {
+      this.sectionEl.classList.add('player--winner');
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  reset() {
+    if (this.active) {
+      this.sectionEl.classList.remove('player--winner');
+      this.sectionEl.classList.remove('player--active');
+    }
+    this.active = false;
+
+    this.score = 0;
+    this.currentScore = 0;
+    this.renderCurrentScore();
+    this.renderScore();
+  }
 }
