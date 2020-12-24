@@ -126,5 +126,3 @@ import Button from './Button.js';
 const main = document.createElement('main');
 document.body.prepend(main);
 const pig = new Pig(main);
-
-console.log(pig);

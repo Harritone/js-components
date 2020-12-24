@@ -1,7 +1,9 @@
 export default class Button {
+  element;
+
   constructor(name) {
     this.name = name;
-    this.button;
+    this.getButtonEl();
   }
 
   getButtonEl() {
@@ -14,7 +16,6 @@ export default class Button {
         ? '🎲 Roll dice'
         : '📥 Hold';
     button.textContent = content;
-    this.button = button;
-    return button;
+    this.element = button;
   }
 }
