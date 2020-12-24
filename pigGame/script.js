@@ -13,7 +13,7 @@ const current1El = document.getElementById('current--1');
 // Variables
 let currentScore = 0;
 let activePlayer = 0;
-const scores = [99, 99];
+const scores = [0, 0];
 let isWinner = false;
 
 score0El.textContent = 0;
@@ -21,6 +21,9 @@ score1El.textContent = 0;
 diceEl.classList.add('hidden');
 
 const rollDiceHandler = () => {
+  if (isWinner) {
+    return;
+  }
   let score;
   // 1. Generate a random dice roll
   const dice = Math.trunc(Math.random() * 6) + 1;
@@ -48,7 +51,7 @@ const rollDiceHandler = () => {
 };
 
 const checkWinner = function () {
-  if (scores[activePlayer] >= 100) {
+  if (scores[activePlayer] >= 10) {
     // getCurrentPlayerEl(activePlayer).classList.add('player--winner');
     score0El.textContent = scores[0];
     score1El.textContent = scores[1];
@@ -57,8 +60,8 @@ const checkWinner = function () {
       .querySelector(`.player--${activePlayer}`)
       .classList.add('player--winner');
     isWinner = true;
-    btnRoll.removeEventListener('click', rollDiceHandler);
-    btnHold.removeEventListener('click', holdHandler);
+    // btnRoll.removeEventListener('click', rollDiceHandler);
+    // btnHold.removeEventListener('click', holdHandler);
   }
 };
 
@@ -67,6 +70,9 @@ const getCurrentPlayerEl = function (activePlayer) {
 };
 
 const switchPlayer = () => {
+  if (isWinner) {
+    return;
+  }
   // remove active state from current player on UI
   document
     .querySelector(`.player--${activePlayer}`)
@@ -80,6 +86,9 @@ const switchPlayer = () => {
 };
 
 const holdHandler = () => {
+  if (isWinner) {
+    return;
+  }
   scores[activePlayer] += currentScore;
   score0El.textContent = scores[0];
   score1El.textContent = scores[1];
@@ -87,12 +96,11 @@ const holdHandler = () => {
   currentScore = 0;
   checkWinner();
   if (!isWinner) switchPlayer();
-  // switchPlayer();
 };
 
 const newGameHandler = () => {
-  btnRoll.addEventListener('click', rollDiceHandler);
-  btnHold.addEventListener('click', holdHandler);
+  // btnRoll.addEventListener('click', rollDiceHandler);
+  // btnHold.addEventListener('click', holdHandler);
   if (document.querySelector('.player--winner'))
     document
       .querySelector('.player--winner')
