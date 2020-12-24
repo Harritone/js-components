@@ -70,7 +70,7 @@ export default class Player {
   }
 
   checkWinner() {
-    if (this.score >= 10) {
+    if (this.score >= 100) {
       this.sectionEl.classList.add('player--winner');
       return true;
     } else {
