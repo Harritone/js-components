@@ -10,7 +10,7 @@ export default class Dice {
   getDiceEl() {
     const img = document.createElement('img');
     if (this.imgUrl) {
-      img.src = `dice-${this.imgUrl}.png`;
+      img.src = `../img/dice-${this.imgUrl}.png`;
     }
     img.alt = 'Playing dice';
     img.classList.add('dice');
@@ -31,6 +31,6 @@ export default class Dice {
       return;
     }
     this.element.classList.remove('hidden');
-    this.element.src = `dice-${this.imgUrl}.png`;
+    this.element.src = `../img/dice-${this.imgUrl}.png`;
   }
 }
