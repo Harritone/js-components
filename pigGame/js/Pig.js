@@ -49,7 +49,6 @@ export default class Pig {
     }
     this.dice.roll();
     const { number } = this.dice;
-    console.log(number);
     if (number !== 1) {
       this.activePlayer.currentScore += number;
       this.activePlayer.renderCurrentScore();
@@ -61,7 +60,6 @@ export default class Pig {
   };
 
   holdBtnHandler = () => {
-    console.log('Hold');
     this.activePlayer.hold();
     this.hasWinner = this.activePlayer.checkWinner();
     if (!this.hasWinner) {
