@@ -8,28 +8,28 @@
 const account1 = {
   owner: 'Jonas Schmedtmann',
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
-  interestRate: 1.2, // %
+  interestRate: 0.012, // %
   pin: 1111,
 };
 
 const account2 = {
   owner: 'Jessica Davis',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
-  interestRate: 1.5,
+  interestRate: 0.015,
   pin: 2222,
 };
 
 const account3 = {
   owner: 'Steven Thomas Williams',
   movements: [200, -200, 340, -300, -20, 50, 400, -460],
-  interestRate: 0.7,
+  interestRate: 0.007,
   pin: 3333,
 };
 
 const account4 = {
   owner: 'Sarah Smith',
   movements: [430, 1000, 700, 50, 90],
-  interestRate: 1,
+  interestRate: 0.001,
   pin: 4444,
 };
 
@@ -61,6 +61,8 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
+inputLoginUsername.focus();
+
 const displayMovements = function (movements) {
   containerMovements.innerHTML = '';
 
@@ -79,21 +81,17 @@ const displayMovements = function (movements) {
   });
 };
 
-displayMovements(account1.movements);
-
 const calcDisplayBalance = function (movements) {
   const balance = movements.reduce((acc, mov) => acc + mov, 0);
   labelBalance.textContent = `${balance} €`;
 };
 
-calcDisplayBalance(account1.movements);
-
-const getIncomeOutcomeInterest = function (arr) {
+const getIncomeOutcomeInterest = function (account) {
   const income = [];
   const outcome = [];
-  arr.map(el => (el >= 0 ? income.push(el) : outcome.push(el)));
+  account.movements.map(el => (el >= 0 ? income.push(el) : outcome.push(el)));
   const interest = income
-    .map(deposite => deposite * 0.012)
+    .map(deposite => deposite * account.interestRate)
     .filter((int, i, arr) => int >= 1)
     .reduce((acc, interest) => acc + interest);
   return [
@@ -103,14 +101,12 @@ const getIncomeOutcomeInterest = function (arr) {
   ];
 };
 
-const calcDisplaySummary = function (movements) {
-  const [income, outcome, interest] = getIncomeOutcomeInterest(movements);
+const calcDisplaySummary = function (account) {
+  const [income, outcome, interest] = getIncomeOutcomeInterest(account);
   labelSumIn.textContent = `${income} €`;
   labelSumOut.textContent = `${Math.abs(outcome)} €`;
-  labelSumInterest.textContent = `${interest} €`;
+  labelSumInterest.textContent = `${Math.round(interest * 100) / 100} €`;
 };
-
-calcDisplaySummary(account1.movements);
 
 const createUsernames = function (accs) {
   accs.forEach(acc => {
@@ -123,3 +119,28 @@ const createUsernames = function (accs) {
 };
 
 createUsernames(accounts);
+
+let currentAccount;
+
+btnLogin.addEventListener('click', function (e) {
+  e.preventDefault();
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  if (currentAccount?.pin === parseInt(inputLoginPin.value)) {
+    // clear input fields
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+    // display UI and a welcome message
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(' ')[0]
+    }.`;
+    containerApp.style.opacity = 1;
+    // display Movements
+    displayMovements(currentAccount.movements);
+    // display Balance
+    calcDisplayBalance(currentAccount.movements);
+    // display Summary
+    calcDisplaySummary(currentAccount);
+  }
+});
