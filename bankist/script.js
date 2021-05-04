@@ -93,10 +93,10 @@ const getIncomeOutcomeInterest = function (account) {
   const interest = income
     .map(deposite => deposite * account.interestRate)
     .filter((int, i, arr) => int >= 1)
-    .reduce((acc, interest) => acc + interest);
+    .reduce((acc, interest) => acc + interest, 0);
   return [
-    income.reduce((acc, el) => acc + el),
-    outcome.reduce((acc, el) => acc + el),
+    income?.reduce((acc, el) => acc + el, 0),
+    outcome?.reduce((acc, el) => acc + el, 0),
     interest,
   ];
 };
@@ -167,5 +167,24 @@ btnTransfer.addEventListener('click', function (e) {
     updateUI(currentAccount);
     inputTransferTo.value = inputTransferAmount.value = '';
     inputTransferAmount.blur();
+  }
+});
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  if (
+    currentAccount.username === inputCloseUsername.value &&
+    currentAccount.pin === +inputClosePin.value
+  ) {
+    // const index = accounts.findIndex(
+    // acc => acc.username === currentAccount.username
+    // );
+    const index = accounts.indexOf(currentAccount);
+    console.log(index);
+    accounts.splice(index, 1);
+    inputCloseUsername.value = inputClosePin.value = '';
+    containerApp.style.opacity = 0;
+    inputLoginUsername.focus;
+    labelWelcome.textContent = 'Log in to get started';
   }
 });
