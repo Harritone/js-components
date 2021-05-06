@@ -8,7 +8,7 @@
 const account1 = {
   owner: 'Jonas Schmedtmann',
   movements: [200, 455.23, -306.5, 25000, -642.21, -133.9, 79.97, 1300],
-  interestRate: 1.2, // %
+  interestRate: 0.012, // %
   pin: 1111,
 
   movementsDates: [
@@ -28,7 +28,7 @@ const account1 = {
 const account2 = {
   owner: 'Jessica Davis',
   movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
-  interestRate: 1.5,
+  interestRate: 0.015,
   pin: 2222,
 
   movementsDates: [
@@ -87,7 +87,7 @@ const displayMovements = function (movements, sort = false) {
           <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-          <div class="movements__value">${mov}€</div>
+          <div class="movements__value">${mov.toFixed(2)}€</div>
         </div>
     `;
 
@@ -97,7 +97,7 @@ const displayMovements = function (movements, sort = false) {
 
 const calcDisplayBalance = function (account) {
   account.balance = account.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${account.balance} €`;
+  labelBalance.textContent = `${account.balance.toFixed(2)} €`;
 };
 
 const getIncomeOutcomeInterest = function (account) {
@@ -109,9 +109,9 @@ const getIncomeOutcomeInterest = function (account) {
     .filter((int, i, arr) => int >= 1)
     .reduce((acc, interest) => acc + interest, 0);
   return [
-    Math.round(income.reduce((acc, el) => acc + el, 0) * 100) / 100,
-    Math.round(outcome.reduce((acc, el) => acc + el, 0) * 100) / 100,
-    interest,
+    income.reduce((acc, el) => acc + el, 0).toFixed(2),
+    outcome.reduce((acc, el) => acc + el, 0).toFixed(2),
+    interest.toFixed(2),
   ];
 };
 
@@ -119,7 +119,7 @@ const calcDisplaySummary = function (account) {
   const [income, outcome, interest] = getIncomeOutcomeInterest(account);
   labelSumIn.textContent = `${income} €`;
   labelSumOut.textContent = `${Math.abs(outcome)} €`;
-  labelSumInterest.textContent = `${Math.round(interest * 100) / 100} €`;
+  labelSumInterest.textContent = `${interest} €`;
 };
 
 const createUsernames = function (accs) {
@@ -143,6 +143,19 @@ const updateUI = function (account) {
   calcDisplaySummary(account);
 };
 let currentAccount;
+
+currentAccount = account1;
+updateUI(currentAccount);
+containerApp.style.opacity = 1;
+
+const now = new Date();
+const day = `${now.getDate()}`.padStart(2, 0);
+const month = `${now.getMonth()}`.padStart(2, 0);
+const year = now.getFullYear();
+const hour = `${now.getHours()}`.padStart(2, 0);
+const min = `${now.getMinutes()}`.padStart(2, 0);
+
+labelDate.textContent = `${day}/${month}/${year} ${hour}:${min}`;
 
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
@@ -186,7 +199,7 @@ btnTransfer.addEventListener('click', function (e) {
 
 btnLoan.addEventListener('click', e => {
   e.preventDefault();
-  const amount = +inputLoanAmount.value;
+  const amount = Math.floor(inputLoanAmount.value);
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
     currentAccount.movements.push(amount);
     updateUI(currentAccount);
@@ -214,8 +227,4 @@ btnClose.addEventListener('click', function (e) {
 
 let sorted = false;
 
-btnSort.addEventListener('click', e => {
-  e.preventDefault();
-  sorted = !sorted;
-  displayMovements(currentAccount.movements, sorted);
-});
+console.log(new Date(account1.movementsDates[1]));
