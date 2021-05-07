@@ -181,18 +181,40 @@ const updateUI = function (account) {
   // display Summary
   calcDisplaySummary(account);
 };
-let currentAccount;
 
-currentAccount = account1;
-updateUI(currentAccount);
-containerApp.style.opacity = 1;
+const startLogoutTimer = function () {
+  const tic = function () {
+    const min = `${Math.trunc(time / 60)}`.padStart(2, 0);
+    const sec = `${time % 60}`.padStart(2, 0);
+    // in each call print the remaining time to UI
+    labelTimer.textContent = `${min}:${sec}`;
+    // when 0 seconds, stop timer and logout user
+    if (time === 0) {
+      clearInterval(timer);
+      containerApp.style.opacity = 0;
+      labelWelcome.textContent = 'Log in to get started';
+      inputLoginUsername.focus;
+    }
+    // decrease 1s
+    time--;
+  };
+  // set time to 5 minutes
+  let time = 300;
+  // call the timer every second
+  tic();
+  timer = setInterval(tic, 1000);
+  return timer;
+};
+
+let currentAccount, timer;
 
 btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
-  currentAccount = accounts.find(
+  const account = accounts.find(
     acc => acc.username === inputLoginUsername.value
   );
-  if (currentAccount?.pin === parseInt(inputLoginPin.value)) {
+  if (account?.pin === parseInt(inputLoginPin.value)) {
+    currentAccount = account;
     // clear input fields
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
@@ -201,8 +223,7 @@ btnLogin.addEventListener('click', function (e) {
       currentAccount.owner.split(' ')[0]
     }.`;
     containerApp.style.opacity = 1;
-
-    setInterval(() => {
+    const dateTime = function () {
       const now = new Date();
       const options = {
         hour: 'numeric',
@@ -217,7 +238,13 @@ btnLogin.addEventListener('click', function (e) {
         currentAccount.locale,
         options
       ).format(now);
-    }, 1000);
+    };
+
+    if (timer) clearInterval(timer);
+    startLogoutTimer();
+
+    dateTime();
+    setInterval(dateTime, 1000);
     updateUI(currentAccount);
   }
 });
@@ -243,6 +270,8 @@ btnTransfer.addEventListener('click', function (e) {
     inputTransferTo.value = inputTransferAmount.value = '';
     inputTransferAmount.blur();
   }
+  if (timer) clearInterval(timer);
+  startLogoutTimer();
 });
 
 btnLoan.addEventListener('click', e => {
@@ -253,6 +282,8 @@ btnLoan.addEventListener('click', e => {
     currentAccount.movementsDates.push(new Date().toISOString());
     updateUI(currentAccount);
   }
+  if (timer) clearInterval(timer);
+  startLogoutTimer();
   inputLoanAmount.value = '';
 });
 
@@ -281,12 +312,3 @@ btnSort.addEventListener('click', e => {
   sorted = !sorted;
   displayMovements(currentAccount, sorted);
 });
-
-setTimeout(
-  (ing1, ing2) => {
-    console.log(`Here are your 🍕 with ${ing1} and ${ing2}`);
-  },
-  3000,
-  'olives',
-  'spinach'
-);
