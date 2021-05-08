@@ -36,6 +36,9 @@ document.addEventListener('keydown', function (e) {
 const btnScrollTo = document.querySelector('.btn--scroll-to');
 const section1 = document.querySelector('#section--1');
 
+///////////////////////////////////////
+// Smooth scrolling
+
 btnScrollTo.addEventListener('click', function (e) {
   // const s1coords = section1.getBoundingClientRect();
 
@@ -52,13 +55,15 @@ btnScrollTo.addEventListener('click', function (e) {
   section1.scrollIntoView({ behavior: 'smooth' });
 });
 
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    if (this.getAttribute('href').length > 2) {
-      e.preventDefault();
-      document
-        .querySelector(this.getAttribute('href'))
-        .scrollIntoView({ behavior: 'smooth' });
-    }
-  });
+// EVENT DELEGATION
+// 1. Add eventListener to common element
+// 2. Determine what element originated the event
+
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  if (e.target.classList.contains('nav__link')) {
+    e.preventDefault();
+    document
+      .querySelector(e.target.getAttribute('href'))
+      .scrollIntoView({ behavior: 'smooth' });
+  }
 });
